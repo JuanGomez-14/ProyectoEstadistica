@@ -1,0 +1,87 @@
+# Entornos virtuales
+venv/
+.env/
+.venv/
+env/
+
+# Archivos de entorno
+.env
+.env.local
+.env.development
+.env.production
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Archivos de medios y estáticos (en desarrollo)
+/media/
+!/media/.gitkeep
+/staticfiles/
+
+# Archivos de IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de Jupyter Notebook
+.ipynb_checkpoints
+
+# Archivos de Excel temporales
+~$*.xlsx
+~$*.xls
+
+# Archivos de caché de Python
+.pytest_cache/
+.mypy_cache/
+
+# Archivos de cobertura
+.coverage
+htmlcov/
+
+# Archivos de compilación
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Archivos de documentación
+docs/_build/
+
+# Archivos de PyCharm
+.idea/
+*.iml
+
+# Archivos de VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Archivos de macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Archivos de Windows
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+__pycache__/
+*.py[cod]

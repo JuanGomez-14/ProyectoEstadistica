@@ -1,0 +1,194 @@
+{% extends "analyzer_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <a href="{% url 'analyzer_app:select_columns' %}" class="btn btn-outline-secondary btn-sm me-2">
+                &larr; Volver
+            </a>
+            <span>Resultados del Análisis - Archivo: {{ filename }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <h5>Columnas analizadas:</h5>
+        <ul>
+            {% for column in selected_columns %}
+                <li>{{ column }}</li>
+            {% endfor %}
+        </ul>
+        
+        <hr>
+        
+        {% if analysis_type == 'univariado' %}
+            <h4 class="mb-3">Análisis Univariado</h4>
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <tbody>
+                        {% for key, value in analysis.items %}
+                            {% if key != 'histograma' %}
+                                <tr>
+                                    <th>{{ key|title }}</th>
+                                    <td>
+                                        {% if value is not None %}
+                                            {% if key == 'percentiles' %}
+                                                <ul>
+                                                    {% for p, val in value.items %}
+                                                        <li>{{ p }}: {{ val|floatformat:2 }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% elif key == 'moda' %}
+                                                {% if value|length > 0 %}
+                                                    {{ value|join:", " }}
+                                                {% else %}
+                                                    No hay moda
+                                                {% endif %}
+                                            {% else %}
+                                                {{ value|floatformat:2 }}
+                                            {% endif %}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if analysis.histograma %}
+                <div class="mt-4">
+                    <h5>Histograma</h5>
+                    <img src="data:image/png;base64,{{ analysis.histograma }}" 
+                         alt="Histograma" class="img-fluid">
+                </div>
+            {% endif %}
+        {% else %}
+            <h4 class="mb-3">Análisis Bivariado</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            Correlación y Covarianza
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <tr>
+                                    <th>Correlación de Pearson</th>
+                                    <td>{{ analysis.correlacion_pearson|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Covarianza</th>
+                                    <td>{{ analysis.covarianza|floatformat:2 }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Resumen {{ selected_columns.0 }}
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                {% for key, value in analysis.resumen_col1.items %}
+                                    {% if key != 'histograma' %}
+                                        <tr>
+                                            <th>{{ key|title }}</th>
+                                            <td>
+                                                {% if value is not None %}
+                                                    {% if key == 'percentiles' %}
+                                                        <ul class="list-unstyled">
+                                                            {% for p, val in value.items %}
+                                                                <li>{{ p }}: {{ val|floatformat:2 }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% elif key == 'moda' %}
+                                                        {% if value|length > 0 %}
+                                                            {{ value|join:", " }}
+                                                        {% else %}
+                                                            No hay moda
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {{ value|floatformat:2 }}
+                                                    {% endif %}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            Resumen {{ selected_columns.1 }}
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                {% for key, value in analysis.resumen_col2.items %}
+                                    {% if key != 'histograma' %}
+                                        <tr>
+                                            <th>{{ key|title }}</th>
+                                            <td>
+                                                {% if value is not None %}
+                                                    {% if key == 'percentiles' %}
+                                                        <ul class="list-unstyled">
+                                                            {% for p, val in value.items %}
+                                                                <li>{{ p }}: {{ val|floatformat:2 }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% elif key == 'moda' %}
+                                                        {% if value|length > 0 %}
+                                                            {{ value|join:", " }}
+                                                        {% else %}
+                                                            No hay moda
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {{ value|floatformat:2 }}
+                                                    {% endif %}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if analysis.scatter_plot %}
+                <div class="mt-4">
+                    <h5>Diagrama de Dispersión con Regresión Lineal</h5>
+                    <img src="data:image/png;base64,{{ analysis.scatter_plot }}" 
+                         alt="Diagrama de dispersión" class="img-fluid">
+                    <div class="mt-2">
+                        <strong>Ecuación de regresión:</strong> 
+                        y = {{ analysis.regresion.pendiente|floatformat:2 }}x + {{ analysis.regresion.intercepto|floatformat:2 }}<br>
+                        <strong>R²:</strong> {{ analysis.regresion.r_cuadrado|floatformat:4 }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="{% url 'analyzer_app:upload_file' %}" class="btn btn-primary me-2">Subir Nuevo Archivo</a>
+    <a href="{% url 'analyzer_app:select_columns' %}" class="btn btn-secondary">Volver a Selección</a>
+</div>
+{% endblock %}

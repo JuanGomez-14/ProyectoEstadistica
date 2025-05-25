@@ -1,0 +1,26 @@
+{% extends "analyzer_app/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Subir Archivo Excel
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.file.label_tag }}
+                {{ form.file }}
+                {% if form.file.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {{ form.file.errors }}
+                    </div>
+                {% endif %}
+                <div class="form-text">Formatos soportados: .xlsx, .xls</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Subir y Analizar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
